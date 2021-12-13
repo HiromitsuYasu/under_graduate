@@ -23,15 +23,14 @@ X, Y = np.meshgrid(x_w, y_w)
 Z = W2(X,Y)
 """
 fig, ax = plt.subplots()
-cont_cl = ax.contour(X, Y, Z, 40, colors=['r', 'g', 'b'])
+cont_cl = ax.contour(X, Y, np.sqrt(Z), 40, colors=['r', 'g', 'b'])
 ax.clabel(cont_cl, inline=True, fontsize=8)
 plt.xlabel('Q^2 [Gev^2]', fontsize=14)
 plt.ylabel('y', fontsize=14)
-plt.title('W^2 [GeV^2]')
+plt.title('W [GeV]')
 plt.grid()
 plt.show()
 """
-
 """
 fig = plt.figure()
 ax = Axes3D(fig)
