@@ -28,7 +28,7 @@ def crosssection(Q2,y):
     secound_term_4 = (m_N * x * y * ALLM.allm_f2(x, Q2)) / (2 * E_mu)
     secound_term = (secound_term_1 * secound_term_2) + secound_term_3 - secound_term_4
     third_term = 2 * m_N * (E_mu - E_mu_prime)
-    crosssection = first_term * secound_term * third_term
+    crosssection = first_term * secound_term / third_term
     return crosssection
 
 X_2 = cordinate_1
@@ -54,8 +54,8 @@ plt.plot(X_2, np.log10(Y_09), label="y = 0.9")
 
 plt.legend()
 plt.xlabel('Q^2 [Gev^2]', fontsize=14)
-plt.ylabel('dsigma / dQ^2 dy')
-plt.title("after")
+plt.ylabel('log10 (dsigma / dQ^2 dy ) [1 / GeV^4]')
+plt.title("sturucture")
 plt.ylim(np.log10(10 **(-5)), np.log10(10 **2))
 plt.grid()
 plt.show()

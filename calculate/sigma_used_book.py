@@ -34,7 +34,7 @@ def crosssection(Q2,y):
     secound_term_4 = (m_N * x * y * ALLM.allm_f2(x, Q2)) / (2 * E_mu)
     secound_term = (secound_term_1 * secound_term_2) + secound_term_3 - secound_term_4
     third_term = 2 * m_N * (E_mu - E_mu_prime)
-    crosssection = first_term * secound_term * third_term
+    crosssection = first_term * secound_term / third_term
     return crosssection
 
 Z = crosssection(X,Y)
@@ -48,8 +48,8 @@ l1, l2 = "all", "non effective"
 ax.plot_wireframe(np.log10(X), np.log10(Y), np.log10(Z), color=c1,label=l1)
 ax.set_xlabel("log10(Q^2) [Gev^2]")
 ax.set_ylabel("log10(y)")
-ax.set_zlabel("log10(sigma_dif) [GeV^2]")
-ax.set_title("after")
+ax.set_zlabel("log10(dsigma / dQ^2 dy) [ / GeV^4]")
+ax.set_title("sturucture")
 ax.grid()
 
 cordinate1_wall = np.linspace(0.001, 1.0, 989)
