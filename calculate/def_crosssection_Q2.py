@@ -35,7 +35,7 @@ def crosssection(Q2, y):
     return crosssection
 
 Z = crosssection(X,Y)
-
+"""
 fig = plt.figure()
 ax = Axes3D(fig)
 
@@ -45,8 +45,8 @@ l1, l2 = "all", "non effective"
 ax.plot_wireframe(np.log10(X), np.log10(Y), np.log10(Z), color=c1,label=l1)
 ax.set_xlabel("log10(Q^2) [Gev^2]")
 ax.set_ylabel("log10(y)")
-ax.set_zlabel("log10(sigma_dif) [GeV^2]")
-ax.set_title("before")
+ax.set_zlabel("log10(sigma_dif) [1/ GeV^4]")
+ax.set_title("flux")
 ax.grid()
 
 cordinate1_wall = np.linspace(0.001, 1.0, 989)
@@ -59,3 +59,4 @@ ax.legend(loc=0)
 ax.set_zlim(np.log10(10**(-5)) ,np.log10(10**4))
 plt.show()
 
+"""
