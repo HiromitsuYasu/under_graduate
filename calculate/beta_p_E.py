@@ -11,11 +11,11 @@ m_mu = 0.1057
 p_mu = np.sqrt(E_mu **2 - m_mu **2)
 
 def p_W(Q2, y):
-    p_W = np.sqrt(p_mu **2 - 2 * p_mu * W_cos_Phi.p_prime(y) * W_cos_Phi.cos_theta(Q2 , y) + W_cos_Phi.p_prime(y))
+    p_W = np.sqrt(p_mu **2 - 2 * p_mu * W_cos_Phi.p_prime(y) * W_cos_Phi.cos_theta(Q2 , y) + W_cos_Phi.p_prime(y) **2)
     return p_W
 
 def E_W(Q2, y):
-    p_W = np.sqrt(p_mu **2 - 2 * p_mu * W_cos_Phi.p_prime(y) * W_cos_Phi.cos_theta(Q2 , y) + W_cos_Phi.p_prime(y))
+    p_W = np.sqrt(p_mu **2 - 2 * p_mu * W_cos_Phi.p_prime(y) * W_cos_Phi.cos_theta(Q2 , y) + W_cos_Phi.p_prime(y) **2)
     E_W = np.sqrt(W2.W2(Q2, y) + p_W **2)
     return E_W
 
