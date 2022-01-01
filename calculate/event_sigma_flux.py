@@ -1,12 +1,14 @@
 import numpy as np
 import math
 import matplotlib.pyplot as plt
-import def_crosssection_Q2 
-import theta_y_fixed 
-import ROOT as r
-from copy import copy
-r.gROOT.SetBatch()
-from mpl_toolkits.mplot3d.axes3d import Axes3D
+
+alpha = 1 / 137
+m_p = 0.9382
+mb_cm = 10**(-27)
+GeV_cm = 3.88 * 10**(-26.0)
+
+Q2_range_min = 0.001
+Q2_range_max = 0.12
 
 rho = 1
 N_A = 6.02 * 10**(23)
@@ -19,25 +21,35 @@ def dN_dt(sigma):
     return dN_dt
 
 
-def is_inner(Q2, y, z):
+Q2_range_min = 0.001
+Q2_range_max = 0.12
+
+def sigma_used_article(Q2, y, sigma_tot):
+    Q2_min = (m_p **2 * y ** 2 ) / (1 - y) 
+    flux = (alpha / (y * np.pi)) * (1 / Q2) * ( (1 - y) * (1 - (Q2_min / Q2) )  + (y **2 / 2))
+    sigma = flux * sigma_tot
+    return sigma
+
+def is_inner(Q2, z):
     
-    return  z < def_crosssection_Q2.crosssection(Q2, y) 
+    return  z < sigma_used_article(Q2, 0.2, 0.4 * mb_cm) 
  
 inner_points_cnt = 0
 all_points_cnt = 0
-
-y_rand = 0.125 + (0.535 - 0.125) * np.random.rand(10**4)
-
-Q2_rand = 0.001 + (0.125 - 0.001) * np.random.rand(10**4)
-
-z_rand = 10 **(6 * np.random.rand(10**4) - 5 )
-for x, y, z in zip(Q2_rand, y_rand, z_rand):
-    all_points_cnt += 1
-    if is_inner(x, y, z):
-        inner_points_cnt += 1
  
-sigma = (inner_points_cnt / all_points_cnt) * ( (0.125 - 0.001) * (0.535 - 0.125) * 10**(6) ) * GeV_cm
+Q2_rand = Q2_range_min + (Q2_range_max - Q2_range_min) * np.random.rand(10**5)
+z_rand = 10 **(3 * np.random.rand(10**5) - 31 )
+for x, y in zip(Q2_rand, z_rand):
+    all_points_cnt += 1
+    if is_inner(x, y):
+        inner_points_cnt += 1
+
+sigma = (inner_points_cnt  / all_points_cnt) *  (Q2_range_max - Q2_range_min) * 10 **3  * GeV_cm
+Q2 = np.linspace(0.001, 0.12, 1000)
+#y = np.linspace(0.105, 0.535, 1000)
+
+cz = sigma_used_article(Q2, 0.2, 0.4 * 10**(-27))
 
 dN_dt = dN_dt(sigma)
-print("sigma" ,sigma ,"cm^2")
+print("sigma", sigma ,"cm^2")
 print("-dN / dt" ,dN_dt)
