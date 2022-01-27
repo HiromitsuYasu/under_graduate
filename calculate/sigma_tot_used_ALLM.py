@@ -18,7 +18,7 @@ E_gamma_range_max = 1.0
 E_gamma = np.linspace(E_gamma_range_min, E_gamma_range_max, division)
 
 fig = plt.figure()
-plt.plot(E_gamma, function_for_sigma.calculate_sigma_tot(Q2, E_gamma / E_mu) * GeV_cm * cm_mb )
+plt.plot(E_gamma, function_for_sigma.calculate_sigma_tot(E_gamma / E_mu, Q2) * GeV_cm * cm_mb )
 plt.xlabel("E_gamma[GeV]")
 plt.ylabel("sigma_tot [mb]")
 plt.xscale("log")
