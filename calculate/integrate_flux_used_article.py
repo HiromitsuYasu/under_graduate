@@ -1,4 +1,6 @@
 import numpy as np
+from matplotlib import pyplot as plt
+from mpl_toolkits.mplot3d.axes3d import Axes3D
 import function_for_sigma
 
 alpha = 1 / 137
@@ -31,7 +33,7 @@ d_sigma = function_for_sigma.sigma_used_article(y_array, Q2, 0.3 * mb_cm)
 
 sigma_max = np.amax(d_sigma)
 sigma_min = np.amin(d_sigma)
-sigma_range = np.log10(sigma_max) - np.log10(sigma_min)
+sigma_range  = np.log10(sigma_max) - np.log10(sigma_min)
 
 # montecalro integration
 def is_inner(y, Q2, z):
@@ -50,20 +52,17 @@ for x, y, z in zip(y_rand, Q2_rand, z_rand):
         inner_points_cnt += 1
 
 sigma = (inner_points_cnt  / all_points_cnt) *  (Q2_range_max - Q2_range_min) * (y_range_max - y_range_min) * 10**sigma_range  * GeV_cm
+print(sigma, "cm^2")
+print(inner_points_cnt / all_points_cnt)
 
-# dN / dt
-rho = 1
-N_A = 6.02 * 10**(23)
-A =  1
-GeV_cm = 3.894 * 10**(-28.0)
-volume = 75 * 16 * 35 / 2
-N = 1 / 100
-cosmic_ray_ratio = 0.563
-
-def dN_dt(sigma):
-    dN_dt = rho * N_A * sigma * N * cosmic_ray_ratio * volume / A
-    return dN_dt
-
-dN_dt = dN_dt(sigma)
-print("sigma", sigma ,"cm^2")
-print("-dN / dt" ,dN_dt)
+# plot 
+fig = plt.figure()
+ax = Axes3D(fig)
+#ax.scatter(y_rand, Q2_rand, np.log10(z_rand))
+ax.plot_wireframe(y_array, Q2, np.log10(d_sigma), color ="red")
+ax.set_xlabel("y")
+ax.set_ylabel("Q^2 [Gev^2]")
+ax.set_zlabel("log10 (dsigma / dQ^2 d^y )[cm^4]")
+plt.title("sigma_tot = const")
+plt.grid()
+fig.savefig("./graph/integrate_flux_used_artile.png")

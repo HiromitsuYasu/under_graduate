@@ -40,7 +40,7 @@ sigma_range  = np.log10(sigma_max) - np.log10(sigma_min)
 # montecalro integration
 def is_inner(x_coordinate, y_coordinate, z_coordinate):
     
-    return  z_coordinate < function_for_sigma.sigma_structure(y_coordinate, x_coordinate)
+    return  z_coordinate < function_for_sigma.sigma_structure(x_coordinate, y_coordinate) * GeV_cm
  
 inner_points_cnt = 0
 all_points_cnt = 0

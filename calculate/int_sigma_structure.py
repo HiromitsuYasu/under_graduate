@@ -37,13 +37,12 @@ y_array = np.array([y] * division)
 d_sigma = function_for_sigma.sigma_structure(y, x) * GeV_cm
 sigma_max = np.amax(d_sigma)
 sigma_min = np.amin(d_sigma)
-sigma_range  = np.log10(sigma_max) - np.log10(sigma_min)
-print(np.log10(sigma_min),np.log10(sigma_max))
+sigma_range = np.log10(sigma_max) - np.log10(sigma_min)
 
 # montecalro integration
 def is_inner(x_coordinate, y_coordinate, z_coordinate):
     
-    return  z_coordinate < function_for_sigma.sigma_structure(y_coordinate, x_coordinate)
+    return  z_coordinate < function_for_sigma.sigma_structure(x_coordinate, y_coordinate) * GeV_cm
  
 inner_points_cnt = 0
 all_points_cnt = 0
@@ -63,7 +62,7 @@ print(inner_points_cnt / all_points_cnt)
 # plot 
 fig = plt.figure()
 ax = Axes3D(fig)
-ax.scatter(y_rand, x_rand, np.log10(z_rand))
+#ax.scatter(y_rand, x_rand, np.log10(z_rand))
 ax.plot_wireframe(y_array, x, np.log10(d_sigma), color ="red")
 ax.set_xlabel("y")
 ax.set_ylabel("x")
@@ -71,4 +70,3 @@ ax.set_zlabel("log10 (dsigma / dQ^2 d^y )[cm^2]")
 plt.title("sigma structure")
 plt.grid()
 fig.savefig("./graph/integrate_sturucture.png")
-plt.show()
