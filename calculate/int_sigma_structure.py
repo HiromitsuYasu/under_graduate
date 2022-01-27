@@ -1,46 +1,74 @@
 import numpy as np
-import math
 import matplotlib.pyplot as plt
-import sigma_used_book 
-import theta_y_fixed 
-import ROOT as r
-from copy import copy
-r.gROOT.SetBatch()
 from mpl_toolkits.mplot3d.axes3d import Axes3D
+import function_for_sigma
 
-def is_inner(Q2, y, z):
+alpha = 1 / 137
+m_p = 0.9382
+mb_cm = 10**(-27)
+GeV_cm = 3.88 * 10**(-28)
+
+# GeV
+E_mu = 1.5
+
+Q2_range_min = 0.085
+Q2_range_max = 0.643
+
+E_gamma_range_min = 0.3
+E_gamma_range_max = 0.5
+division = 100
+
+y_range_min = function_for_sigma.calculate_y_from_E_gamma(E_gamma_range_min)
+y_range_max = function_for_sigma.calculate_y_from_E_gamma(E_gamma_range_max)
+y = np.linspace(y_range_min, y_range_max, division)
+
+# Q2 = [[Q^2_min(y_0) , ... , Q^2_max(y_0)], [Q^2_min(y_1), ..., Q^2_max(y_1)], ... ]
+Q2 = np.linspace(function_for_sigma.calculate_Q2_min_from_y(y), function_for_sigma.calculate_Q2_max_from_y(y), division)
+
+#x = [[x(Q^2_min(y_0), ..., x(Q^2_max(y_0))], [x(Q^2_min(y_1), ..., x(Q^2_max(y_1))], ... ]
+x = function_for_sigma.calculate_x_from_Q2(Q2, y).T
+x_range_min = function_for_sigma.calculate_x_from_Q2(function_for_sigma.calculate_Q2_min_from_y(y_range_min), y_range_min)
+x_range_max  =function_for_sigma.calculate_x_from_Q2(function_for_sigma.calculate_Q2_max_from_y(y_range_max), y_range_max)
+
+# y: 1 dimensional -> 2 dimensional
+y_array = np.array([y] * division)
+
+# sigma calculaion
+d_sigma = function_for_sigma.sigma_structure(y, x) * GeV_cm
+sigma_max = np.amax(d_sigma)
+sigma_min = np.amin(d_sigma)
+sigma_range  = np.log10(sigma_max) - np.log10(sigma_min)
+print(np.log10(sigma_min),np.log10(sigma_max))
+
+# montecalro integration
+def is_inner(x_coordinate, y_coordinate, z_coordinate):
     
-    return  z < sigma_used_book.crosssection(Q2, y) 
+    return  z_coordinate < function_for_sigma.sigma_structure(y_coordinate, x_coordinate)
  
 inner_points_cnt = 0
 all_points_cnt = 0
- 
-Q2_rand = 0.001 + (0.12 - 0.001) * np.random.rand(10**5)
-y_rand = 0.125 + (0.535 - 0.125) * np.random.rand(10**5)
-z_rand = 10 **(4 * np.random.rand(10**5) - 3 )
-for x, y, z in zip(Q2_rand, y_rand, z_rand):
+
+y_rand = y_range_min + (y_range_max - y_range_min) * np.random.rand(10**5)
+x_rand = x_range_min + (x_range_max - x_range_min) * np.random.rand(10**5)
+z_rand = 10 **(sigma_range * np.random.rand(10**5) - 30.87)
+for x_coordinate, y_coordinate, z_coordinate in zip(y_rand, x_rand, z_rand):
     all_points_cnt += 1
-    if is_inner(x, y, z):
+    if is_inner(x_coordinate, y_coordinate, z_coordinate):
         inner_points_cnt += 1
 
-sigma = (inner_points_cnt  / all_points_cnt) * ( (0.12 - 0.001) * (0.535 - 0.125) * 10**(4) )
-print(sigma)
+sigma = (inner_points_cnt  / all_points_cnt) *  (x_range_max - x_range_min) * (y_range_max - y_range_min) * 10**sigma_range  * GeV_cm
+print(sigma, "cm^2")
+print(inner_points_cnt / all_points_cnt)
 
-#以下plot
-# ランダムに配置した点のプロット
+# plot 
 fig = plt.figure()
 ax = Axes3D(fig)
-ax.scatter(Q2_rand, y_rand,np.log10(z_rand))
-
-cordinate_1 = np.linspace(0.001, 0.12, 1000)
-cordinate_2 = np.linspace(0.125, 0.535, 1000)
-X, Y = np.meshgrid(cordinate_1, cordinate_2)
-
-cz = sigma_used_book.crosssection(X, Y) 
-ax.plot_wireframe(X, Y, np.log10(cz) , color ="red")
-ax.set_xlabel("Q^2 [Gev^2]")
-ax.set_ylabel("y")
-ax.set_zlabel("dsigma / dQ^2 dy[1 / GeV^4]")
-ax.grid()
-
+ax.scatter(y_rand, x_rand, np.log10(z_rand))
+ax.plot_wireframe(y_array, x, np.log10(d_sigma), color ="red")
+ax.set_xlabel("y")
+ax.set_ylabel("x")
+ax.set_zlabel("log10 (dsigma / dQ^2 d^y )[cm^2]")
+plt.title("sigma structure")
+plt.grid()
+fig.savefig("./graph/integrate_sturucture.png")
 plt.show()
