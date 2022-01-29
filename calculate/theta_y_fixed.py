@@ -1,46 +1,27 @@
 import numpy as np
-from mpl_toolkits.mplot3d.axes3d import Axes3D
-#import ALLM_num as ALLM
-import math
 import matplotlib.pyplot as plt
-import matplotlib.cm as cm
-import matplotlib.animation as animation
+import function_for_sigma
+import function_for_angle_distribution
 
-#[GeV]
-E_mu = 1.5
-m_mu = 0.1057
-p_mu = np.sqrt(E_mu **2 - m_mu **2)
+E_gamma_range_min = 0.3
+E_gamma_range_max = 0.5
 
-def theta(Q2, y):
-    Y = 1 - y
-    a = np.arccos((-Q2 - 2 * m_mu **2 + 2 * E_mu **2 * Y) / (2 * p_mu * np.sqrt( (E_mu **2 * Y**2) - m_mu **2) ) )
-    return a
+division = 5
+y_range_min = function_for_sigma.calculate_y_from_E_gamma(E_gamma_range_min)
+y_range_max = function_for_sigma.calculate_y_from_E_gamma(E_gamma_range_max)
+y = np.linspace(y_range_min, y_range_max, division)
 
-cordinate_1 = np.arange(0.001, 0.99, 0.001)
+fig = plt.figure()
 
-X_1 = cordinate_1
-Y_1 = theta(cordinate_1, 0.1)
-Y_2 = theta(cordinate_1, 0.2)
-Y_3 = theta(cordinate_1, 0.3)
-Y_4 = theta(cordinate_1, 0.4)
-Y_5 = theta(cordinate_1, 0.5)
-Y_6 = theta(cordinate_1, 0.6)
-Y_7 = theta(cordinate_1, 0.7)
-Y_8 = theta(cordinate_1, 0.8)
-Y_9 = theta(cordinate_1, 0.9)
-"""
-plt.plot(X_1, Y_1, label="y = 0.1")
-plt.plot(X_1, Y_2, label="y = 0.2")
-plt.plot(X_1, Y_3, label="y = 0.3")
-plt.plot(X_1, Y_4, label="y = 0.4")
-plt.plot(X_1, Y_5, label="y = 0.5")
-plt.plot(X_1, Y_6, label="y = 0.6")
-plt.plot(X_1, Y_7, label="y = 0.7")
-plt.plot(X_1, Y_8, label="y = 0.8")
-#plt.plot(X_1, Y_9 / np.pi, label="y = 0.9")
+for y_value in y:
+    Q2_min = function_for_sigma.calculate_Q2_min_from_y(y_value)
+    Q2_max = function_for_sigma.calculate_Q2_max_from_y(y_value)
+    Q2 = np.linspace(Q2_min, Q2_max, division * 10)
+    plt.plot(Q2, function_for_angle_distribution.theta(y_value, Q2), label = "y = {0}".format(y_value))
+
 plt.legend()
 plt.xlabel('Q^2 [Gev^2]', fontsize=14)
 plt.ylabel("rad")
 plt.title('theta fixed y')
-plt.show()
-"""
+plt.grid()
+fig.savefig("./graph/theta_y_fixed.png")
