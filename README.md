@@ -8,3 +8,5 @@
 角度の計算をするときの式は function_for_angle_distribution.py
 断面積の計算をするときの式は function_for_sigma.py
 にそれぞれ入っている
+
+更新が新しいものが使うやつ。そのうちまとめる
