@@ -17,7 +17,7 @@ for y_value in y:
     Q2_min = function_for_sigma.calculate_Q2_min_from_y(y_value)
     Q2_max = function_for_sigma.calculate_Q2_max_from_y(y_value)
     Q2 = np.linspace(Q2_min, Q2_max, division * 10)
-    plt.plot(Q2, function_for_angle_distribution.theta(y_value, Q2), label = "y = {0}".format(y_value))
+    plt.plot(Q2, function_for_angle_distribution.theta(y_value, Q2), label = "y = {:.2f}".format(y_value))
 
 plt.legend()
 plt.xlabel('Q^2 [Gev^2]', fontsize=14)
